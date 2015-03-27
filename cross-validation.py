@@ -38,15 +38,17 @@ def main():
 		shuffle(indices);
 
 	#mean
-	print('mean')
-	print(len(spam_data[0]))
-	#mean = [x for x, i in range(len(spam_data)) and spam_data[i][0]]
+	#print('mean')
+	#print(len(spam_data[0]))
+	feature_means = [];
+	feature_means2 = [statistics.mean(spam_data[:,i] for i in range(len(spam_data[0]))]
+	feature_stdev = [];
 	for i in range(len(spam_data[0])):
-		print(statistics.mean(spam_data[:,i]))
-		print(statistics.stdev(spam_data[:,i]))
-		print()
+		feature_means.append(statistics.mean(spam_data[:,i]))
+		feature_stdev.append(statistics.stdev(spam_data[:,i]))
 	#print([row[1] for row in spam_data])
-	#print(mean)
+	print(feature_means)
+	print(feature_means2)
 	sys.exit()
 
 
