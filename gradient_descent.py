@@ -57,7 +57,8 @@ class GradientDescent:
                 print('Gradient descent overshooting with error difference of ' + str(error_diff))
 
             if error_diff < convergence_tolerance:
-                print('Gradient descent converged after ' + str(iteration) + ' iterations.')
+                print('Gradient descent converged after ' + str(iteration) + ' iterations with error difference of '
+                      + str(error_diff))
                 break
 
         return theta, errors
