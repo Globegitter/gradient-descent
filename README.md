@@ -3,8 +3,8 @@ Coordinate-Ascent
 Implementation of a basic Coordinate Ascent (same thing as Coordinate Descent, just 'reversed'), as well as the Lasso implementation.
 
 ## Usage
-Run this app via `python3 gradient_descent.py stochastic linear` or in multiple ways at once via 
-`python3 gradient_descent.py stochastic linear batch linear stochastic logistic batch logistic `
+Run this app via `python3 cross_validation.py stochastic linear` or in multiple ways at once via 
+`python3 cross_validation.py stochastic linear batch linear stochastic logistic batch logistic `
 
 ## Modules
 This repository has basically 3 modules:
