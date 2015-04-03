@@ -4,7 +4,6 @@ import numpy as np
 from gradient_descent import GradientDescent
 from standardize import Standardize
 from random import shuffle
-from sklearn.metrics import mean_squared_error
 import matplotlib.pyplot as plt
 import sys
 
