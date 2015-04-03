@@ -25,18 +25,19 @@ class GradientDescent:
         error = sum((log_prediction - y) ** 2) / m
         return error
 
-    def fit_stochastic_linear(self, X, y, theta, lam, num_iters=100):
+    def fit_stochastic_linear(self, X, y, theta, lam, num_iters=1000):
         np.set_printoptions(suppress=True)
         y = np.reshape(np.array(y), (len(y), 1))
         X = np.array(X)
+        convergence_tolerance = 0.00001
         m = len(y)  # number of training examples
         # prev_error = sys.float_info.max
         # error = sum((np.dot(X, theta) - y) ** 2) / m
-        errors = []
+        errors = [self.compute_cost_linear(X, y, theta)[0]]
 
         #iteration = 0
 
-        for iteration in range(num_iters):
+        for iteration in range(1, num_iters + 1):
             for i in range(m):
                 # self.compute_cost_linear(X, y, theta)
                 prediction_difference = np.dot(X[i, :], theta)[0] - y[i]
@@ -46,18 +47,23 @@ class GradientDescent:
             errors.append(self.compute_cost_linear(X, y, theta)[0])
             # cost should go down
             print('The error in iteration ' + str(iteration) + ' is ' + str(errors[iteration]))
-            # print(abs(error - prev_error))
+
+            print(abs(errors[iteration] - errors[iteration - 1]))
+            if abs(errors[iteration] - errors[iteration - 1]) < convergence_tolerance:
+                print('Gradient descent converged after ' + str(iteration) + ' iterations.')
+                break
 
         return theta, errors
 
-    def fit_batch_linear(self, X, y, theta, lam, num_iters=100):
+    def fit_batch_linear(self, X, y, theta, lam, num_iters=1000):
         np.set_printoptions(suppress=True)
         y = np.reshape(np.array(y), (len(y), 1))
         X = np.array(X)
+        convergence_tolerance = 0.00001
         m = len(y)  # number of training examples
         # prev_error = sys.float_info.max
         # error = sum((np.dot(X, theta) - y) ** 2) / m
-        errors = []
+        errors = [self.compute_cost_linear(X, y, theta)[0]]
 
         #iteration = 0
 
@@ -74,21 +80,26 @@ class GradientDescent:
             errors.append(self.compute_cost_linear(X, y, theta)[0])
             # cost should go down
             print('The error in iteration ' + str(iteration) + ' is ', errors[iteration])
-            # print(abs(error - prev_error))
+
+            print(abs(errors[iteration] - errors[iteration - 1]))
+            if abs(errors[iteration] - errors[iteration - 1]) < convergence_tolerance:
+                print('Gradient descent converged after ' + str(iteration) + ' iterations.')
+                break
 
         return theta, errors
 
-    def fit_stochastic_logistic(self, X, y, theta, lam, num_iters=100):
+    def fit_stochastic_logistic(self, X, y, theta, lam, num_iters=1000):
         y = np.reshape(np.array(y), (len(y), 1))
         X = np.array(X)
+        convergence_tolerance = 0.00001
         m = len(y)  # number of training examples
         # prev_error = sys.float_info.max
         # error = sum((np.dot(X, theta) - y) ** 2) / m
-        errors = []
+        errors = [self.compute_cost_logistic(X, y, theta)[0]]
 
         #iteration = 0
 
-        for iteration in range(num_iters):
+        for iteration in range(1, num_iters + 1):
             for i in range(m):
                 # self.compute_cost_logistic(X, y, theta)
                 prediction_difference = 1/(1 + math.exp(-np.dot(X[i, :], theta))) - y[i]
@@ -98,21 +109,26 @@ class GradientDescent:
             errors.append(self.compute_cost_logistic(X, y, theta)[0])
             # cost should go down
             print('The error in iteration ' + str(iteration) + ' is ', errors[iteration])
-            # print(abs(error - prev_error))
+
+            print(abs(errors[iteration] - errors[iteration - 1]))
+            if abs(errors[iteration] - errors[iteration - 1]) < convergence_tolerance:
+                print('Gradient descent converged after ' + str(iteration) + ' iterations.')
+                break
 
         return theta, errors
 
-    def fit_batch_logistic(self, X, y, theta, lam, num_iters=100):
+    def fit_batch_logistic(self, X, y, theta, lam, num_iters=1000):
         y = np.reshape(np.array(y), (len(y), 1))
         X = np.array(X)
+        convergence_tolerance = 0.00001
         m = len(y)  # number of training examples
         # prev_error = sys.float_info.max
         # error = sum((np.dot(X, theta) - y) ** 2) / m
-        errors = []
+        errors = [self.compute_cost_logistic(X, y, theta)[0]]
 
         #iteration = 0
 
-        for iteration in range(num_iters):
+        for iteration in range(1, num_iters + 1):
             gradient = 0
 
             for i in range(m):
@@ -125,6 +141,10 @@ class GradientDescent:
             errors.append(self.compute_cost_logistic(X, y, theta)[0])
             # cost should go down
             print('The error in iteration ' + str(iteration) + ' is ', errors[iteration])
-            # print(abs(error - prev_error))
+
+            print(abs(errors[iteration] - errors[iteration - 1]))
+            if abs(errors[iteration] - errors[iteration - 1]) < convergence_tolerance:
+                print('Gradient descent converged after ' + str(iteration) + ' iterations.')
+                break
 
         return theta, errors

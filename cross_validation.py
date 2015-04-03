@@ -269,8 +269,8 @@ def main():
             nr_no_spam_predictions = len([element for element in predictions[no_spam_indices]
                                           if element > spam_threshold])
 
-            print('Nr of spam total', nr_spam)
-            print('Nr of spam classified', nr_spam_predictions)
+            # print('Nr of spam total', nr_spam)
+            # print('Nr of spam classified', nr_spam_predictions)
 
             # x-coordinate = false_positive_rate
             false_positive_rates.append(nr_no_spam_predictions / nr_no_spam)
@@ -286,6 +286,22 @@ def main():
             # connected up = ROC curve
             # 1 ROC curve for all the 10 k-folds
             # false positives, what are 0s in y_test but are above the threshold in the predictions
+
+        # sort the x and y coordinates so the AUC can be calculated properly
+        false_positive_rates.sort()
+        true_positive_rates.sort()
+
+        auc_sum = 0
+
+        for i in range(1, len(false_positive_rates)):
+            x_subtracted = false_positive_rates[i] - false_positive_rates[i - 1]
+            y_added = true_positive_rates[i] + true_positive_rates[i - 1]
+            auc_sum += x_subtracted * y_added
+
+        auc = (1/2) * auc_sum
+
+        print('The AUC of my classifier is ' + str(auc))
+
         plt.figure(2)
         plt.plot(false_positive_rates, true_positive_rates)
         plt.legend(['ROC-Curve'])

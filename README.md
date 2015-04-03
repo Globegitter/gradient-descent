@@ -4,7 +4,7 @@ Implementation of a basic Coordinate Ascent (same thing as Coordinate Descent, j
 
 ## Usage
 Run this app via `python3 cross_validation.py stochastic linear` or in multiple ways at once via 
-`python3 cross_validation.py stochastic linear batch linear stochastic logistic batch logistic `
+`python3 cross_validationp.py stochastic linear batch linear stochastic logistic batch logistic `
 
 ## Modules
 This repository has basically 3 modules:
