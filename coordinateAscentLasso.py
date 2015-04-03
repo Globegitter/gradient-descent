@@ -3,6 +3,7 @@ __author__ = 'markus'
 import numpy as np
 import sys
 import matplotlib.pyplot as plt
+import statistics
 
 class CoordinateAscentLasso:
     """Coordinate Ascent for Lasso"""
@@ -32,9 +33,11 @@ class CoordinateAscentLasso:
             else:
                 beta = init[0]
         else:
-            beta0 = y.mean(axis=0)[0]
+            #beta0 = y.mean(axis=0)[0]
+            beta0 = 0
             if beta0Seperate:
-                beta = np.ones((k, 1))
+                #beta = np.ones((k, 1))
+                beta = np.zeros((k, 1))
             else:
                 beta = np.ones((k - 1, 1))
                 beta = np.append([[beta0]], beta, 0)
@@ -82,8 +85,10 @@ class CoordinateAscentLasso:
 
             #likelihood for new state
             logl = self.logLikelihood(y, X, beta, lam, beta0)
+            # print(statistics.mean(y))
 
             assert logl - prevlogl > 0, 'Difference must be bigger than 0'
+            # print(logl - prevlogl)
 
             logls[i] = logl
             i += 1

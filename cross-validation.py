@@ -11,16 +11,19 @@ import numpy as np
 from sklearn import cross_validation
 from sklearn import datasets
 from sklearn import svm
+from sklearn.metrics import mean_squared_error
 import sys
 from random import shuffle
 import statistics
+from sklearn.linear_model import SGDClassifier
+from gradient_descent import GradientDescent
 
 
 def main():
     #sd = SynthData()
 	#loads the spambase data
 	f = open("data/spambase.data")
-	spam_data = np.loadtxt(f,delimiter=',')
+	spam_data = np.array(np.loadtxt(f,delimiter=','))
 
 	#create indices for k-fold validation
 	train_indices = [[], [], [], [], [], [], [], [], []]
@@ -37,24 +40,37 @@ def main():
 	for indices in train_indices:
 		shuffle(indices);
 
-	#mean
-	#print('mean')
-	#print(len(spam_data[0]))
-	feature_means = [];
-	feature_means2 = [statistics.mean(spam_data[:,i] for i in range(len(spam_data[0]))]
-	feature_stdev = [];
-	for i in range(len(spam_data[0])):
-		feature_means.append(statistics.mean(spam_data[:,i]))
-		feature_stdev.append(statistics.stdev(spam_data[:,i]))
-	#print([row[1] for row in spam_data])
-	print(feature_means)
-	print(feature_means2)
-	sys.exit()
+	#normalisation of the data
+	st = Standardize()
+	email_is_spam = spam_data[:,len(spam_data[0]) - 1]
+	spam_data = spam_data[:, 0:len(spam_data[0]) - 2]
+	spam_data_normalized = st.standardize(spam_data)
+	#spam_data_normalized = np.array(spam_data_normalized)
+	#group the data into 10 k-folds
+	train_spam_data = []
+	train_is_spam = []
+	for indices in train_indices:
+		train_spam_data.append(spam_data_normalized[indices, :]);
+		train_is_spam.append(email_is_spam[indices])
+	test_spam_data = spam_data_normalized[test_indices, :]
+	test_is_spam = email_is_spam[test_indices]
 
+	cal = CoordinateAscentLasso()
+	start_lambda = 1 #this will then be divided by 10, 5 times
 
-    #ca = coordinateAscent()
-	#cal = CoordinateAscentLasso()
-    #st = Standardize()
+	# y = train_spam_data[0] * np.ones((len(train_spam_data[0]), 1))
+	# y = np.zeros((len(train_spam_data[0]), 1))
+	y_true = train_is_spam[0]
+	beta0Seperate = True
+	# print(len(test_is_spam))
+	cal = CoordinateAscentLasso()
+	while start_lambda > 0.00001:
+		[beta0, beta] = cal.coordinateAscentLasso(y_true, train_spam_data[0], start_lambda)
+		print(len(beta))
+		# error = mean_squared_error(y_true)
+		start_lambda = start_lambda / 10
+
+    #
     #beta0Seperate = True
     #lam = 0.1
 
