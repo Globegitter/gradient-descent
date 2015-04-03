@@ -61,19 +61,25 @@ def run_cross_validation(gradient_descent_method, k_fold_nr, lambdas, num_iters,
     predictions = [[] for i in range(len(lambdas))]
     test_errors = [[] for i in range(len(lambdas))]
     train_err_history = [[] for i in range(len(lambdas))]
+    calculated_iters = [100, 100, 100]
 
     # train on train data taking all apart from one set and switching around
-    for i in range(k_fold_nr):  # k_fold_nr
+    for i in range(4):  # k_fold_nr
         for l in range(len(lambdas)):
             lam = lambdas[l]
             print('---------')
-            print('Running k-fold set ' + str(i) + ' out of ' + str(k_fold_nr) + ' with lambda value ' + str(lam))
+            print('Running k-fold set ' + str(i + 1) + ' out of ' + str(k_fold_nr) + ' with lambda value ' + str(lam))
             # print('lambda value', lam)
             X_train_set, X_test_set = select_k_fold_partition(k_fold_data, i)
             y_train_set, y_test_set = select_k_fold_y(y_data, k_fold_indices, i)
             theta = np.zeros((len(X_train_set[0]), 1))
             dynamic_fit_call = getattr(gd, 'fit_' + gradient_descent_method[0] + '_' + gradient_descent_method[1])
-            theta, train_errors = dynamic_fit_call(X_train_set, y_train_set, theta, lam, num_iters)
+            theta, train_errors, new_calculated_iters = dynamic_fit_call(X_train_set, y_train_set, theta, lam, num_iters,
+                                                                     calculated_iters[l])
+
+            # mak sure that all k-fold runs have the same number of iterations for the same lambda
+            # if i == 0:
+            #     calculated_iters[l] = new_calculated_iters
             # print('CALCULATING TEST ERROR')
             dynamic_cost_call = getattr(gd, 'compute_cost_' + gradient_descent_method[1])
             test_error = dynamic_cost_call(X_test_set, y_test_set, theta)[0]
@@ -104,7 +110,7 @@ def run_cross_validation(gradient_descent_method, k_fold_nr, lambdas, num_iters,
     # need to take element[0] since each element is wrapped in an array
     lowest_error_predictions = np.array([element[0] for element in predictions[lowest_error_index]])
     lowest_error_y_test_sets = np.array([element[0] for element in y_test_sets[lowest_error_index]])
-    print(lowest_error_y_test_sets)
+    # print(lowest_error_y_test_sets)
 
     return train_err_history, lowest_error_predictions, lowest_error_y_test_sets
 
@@ -209,7 +215,7 @@ def main():
         k_fold_spam_data.append(spam_data_normalized[indices, :])
 
     lambdas = [1, 0.1, 0.01]
-    num_iters = 500
+    num_iters = 100
 
     for gradient_descent_method in gradient_descent_methods:
         train_err_history, predictions, y_test_sets = run_cross_validation(
@@ -224,6 +230,8 @@ def main():
 
         for lam_i in range(len(lambdas)):
             lam_err_history = train_err_history[lam_i]
+            # print(lam_err_history)
+            # print(np.mean(lam_err_history.tolist(), axis=0))
             collapsed_train_err_history[lam_i].extend(np.mean(lam_err_history, axis=0))
 
         # print(collapsed_train_err_history)
@@ -232,7 +240,9 @@ def main():
         # print(len(collapsed_train_err_history[0]))
         # print(len(collapsed_train_err_history[1]))
         # print(len(collapsed_train_err_history[2]))
-        iterations = [i for i in range(len(collapsed_train_err_history[0]))]
+        iterations0 = [i for i in range(len(collapsed_train_err_history[0]))]
+        iterations1 = [i for i in range(len(collapsed_train_err_history[1]))]
+        iterations2 = [i for i in range(len(collapsed_train_err_history[2]))]
         # print(collapsed_train_err_history)
 
         # best lambda based on test errors (should have 3 test errors, where-as each is the
@@ -241,8 +251,8 @@ def main():
         # y_test as well, that is dependent on the k-group I chose
         print('plotting now')
         plt.figure(1)
-        plt.plot(iterations, collapsed_train_err_history[0], 'g-', iterations,
-                 collapsed_train_err_history[1], 'b-', iterations, collapsed_train_err_history[2], 'r-')
+        plt.plot(iterations0, collapsed_train_err_history[0], 'g-', iterations1,
+                 collapsed_train_err_history[1], 'b-', iterations2, collapsed_train_err_history[2], 'r-')
         plt.legend(['lambda=1.0', 'lambda=0.1', 'lambda=0.01'])
 
         # plt.plot(iterations, collapsed_train_err_history[1], 'b-', iterations, collapsed_train_err_history[2], 'r-')
@@ -304,7 +314,7 @@ def main():
 
         plt.figure(2)
         plt.plot(false_positive_rates, true_positive_rates)
-        plt.legend(['ROC-Curve'])
+        plt.legend(['ROC-Curve with AUC ' + str(auc)])
         plt.show()
 
 

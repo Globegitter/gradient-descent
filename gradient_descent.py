@@ -29,7 +29,7 @@ class GradientDescent:
         error = sum((log_prediction - y) ** 2) / m
         return error
 
-    def fit_stochastic_linear(self, X, y, theta, lam, num_iters=1000):
+    def fit_stochastic_linear(self, X, y, theta, lam, num_iters=1000, caculated_iters=0):
         np.set_printoptions(suppress=True)
         y = np.reshape(np.array(y), (len(y), 1))
         X = np.array(X)
@@ -50,20 +50,28 @@ class GradientDescent:
                 theta = theta - (lam * gradient_sample)
             errors.append(self.compute_cost_linear(X, y, theta)[0])
             # cost should go down
-            print('The error in iteration ' + str(iteration) + ' is ' + str(errors[iteration]))
+            # print('The error in iteration ' + str(iteration) + ' is ' + str(errors[iteration]))
 
-            error_diff = abs(errors[iteration] - errors[iteration - 1])
+            error_diff = errors[iteration - 1] - errors[iteration]
             if error_diff < 0:
-                print('Gradient descent overshooting with error difference of ' + str(error_diff))
+                print('Gradient descent overshooting with error difference of ' + str(error_diff) + ' and error of ' +
+                      str(errors[iteration]))
 
-            if error_diff < convergence_tolerance:
+            if error_diff < convergence_tolerance and caculated_iters < 1:
                 print('Gradient descent converged after ' + str(iteration) + ' iterations with error difference of '
-                      + str(error_diff))
+                      + str(error_diff) + ' and error of ' + str(errors[iteration]))
                 break
 
-        return theta, errors
+            if caculated_iters > 0 and iteration == caculated_iters:
+                print('Gradient descent converged based on first calculated iterations at ' + str(iteration))
+                break
 
-    def fit_batch_linear(self, X, y, theta, lam, num_iters=1000):
+        if iteration == num_iters:
+            print('Gradient descent converged after reaching max iterations: ' + str(iteration) + '.')
+
+        return theta, errors, iteration
+
+    def fit_batch_linear(self, X, y, theta, lam, num_iters=1000, caculated_iters=0):
         np.set_printoptions(suppress=True)
         y = np.reshape(np.array(y), (len(y), 1))
         X = np.array(X)
@@ -87,20 +95,28 @@ class GradientDescent:
             theta = theta - (lam * gradient)
             errors.append(self.compute_cost_linear(X, y, theta)[0])
             # cost should go down
-            print('The error in iteration ' + str(iteration) + ' is ', errors[iteration])
+            # print('The error in iteration ' + str(iteration) + ' is ', errors[iteration])
 
-            error_diff = abs(errors[iteration] - errors[iteration - 1])
+            error_diff = errors[iteration - 1] - errors[iteration]
             if error_diff < 0:
-                print('Gradient descent overshooting with error difference of ' + str(error_diff))
+                print('Gradient descent overshooting with error difference of ' + str(error_diff) + ' and error of ' +
+                      str(errors[iteration]))
 
-            if error_diff < convergence_tolerance:
+            if error_diff < convergence_tolerance and caculated_iters < 1:
                 print('Gradient descent converged after ' + str(iteration) + ' iterations with error difference of '
-                      + str(error_diff))
+                      + str(error_diff) + ' and error of ' + str(errors[iteration]))
                 break
 
-        return theta, errors
+            if caculated_iters > 0 and iteration == caculated_iters:
+                print('Gradient descent converged based on first calculated iterations at ' + str(iteration))
+                break
 
-    def fit_stochastic_logistic(self, X, y, theta, lam, num_iters=1000):
+        if iteration == num_iters:
+            print('Gradient descent converged after reach max iterations: ' + str(iteration) + '.')
+
+        return theta, errors, iteration
+
+    def fit_stochastic_logistic(self, X, y, theta, lam, num_iters=1000, caculated_iters=0):
         y = np.reshape(np.array(y), (len(y), 1))
         X = np.array(X)
         convergence_tolerance =self.convergence_tolerance
@@ -120,21 +136,29 @@ class GradientDescent:
                 theta = theta - (lam * gradient_sample)
             errors.append(self.compute_cost_logistic(X, y, theta)[0])
             # cost should go down
-            print('Gradient descent converged after ' + str(iteration) + ' iterations with error difference of '
-                  + str(error_diff))
+            # print('Gradient descent converged after ' + str(iteration) + ' iterations with error difference of '
+            #       + str(error_diff))
 
-            error_diff = abs(errors[iteration] - errors[iteration - 1])
+            error_diff = errors[iteration - 1] - errors[iteration]
             if error_diff < 0:
-                print('Gradient descent overshooting with error difference of ' + str(error_diff))
+                print('Gradient descent overshooting with error difference of ' + str(error_diff) + ' and error of ' +
+                      str(errors[iteration]))
 
-            if error_diff < convergence_tolerance:
+            if error_diff < convergence_tolerance and caculated_iters < 1:
                 print('Gradient descent converged after ' + str(iteration) + ' iterations with error difference of '
-                      + str(error_diff))
+                      + str(error_diff) + ' and error of ' + str(errors[iteration]))
                 break
 
-        return theta, errors
+            if caculated_iters > 0 and iteration == caculated_iters:
+                print('Gradient descent converged based on first calculated iterations at ' + str(iteration))
+                break
 
-    def fit_batch_logistic(self, X, y, theta, lam, num_iters=1000):
+        if iteration == num_iters:
+            print('Gradient descent converged after reach max iterations: ' + str(iteration) + '.')
+
+        return theta, errors, iteration
+
+    def fit_batch_logistic(self, X, y, theta, lam, num_iters=1000, caculated_iters=0):
         y = np.reshape(np.array(y), (len(y), 1))
         X = np.array(X)
         convergence_tolerance = self.convergence_tolerance
@@ -157,15 +181,23 @@ class GradientDescent:
             theta = theta - (lam * gradient)
             errors.append(self.compute_cost_logistic(X, y, theta)[0])
             # cost should go down
-            print('The error in iteration ' + str(iteration) + ' is ', errors[iteration])
+            # print('The error in iteration ' + str(iteration) + ' is ', errors[iteration])
 
-            error_diff = abs(errors[iteration] - errors[iteration - 1])
+            error_diff = errors[iteration - 1] - errors[iteration]
             if error_diff < 0:
-                print('Gradient descent overshooting with error difference of ' + str(error_diff))
+                print('Gradient descent overshooting with error difference of ' + str(error_diff) + ' and error of ' +
+                      str(errors[iteration]))
 
-            if error_diff < convergence_tolerance:
+            if error_diff < convergence_tolerance and caculated_iters < 1:
                 print('Gradient descent converged after ' + str(iteration) + ' iterations with error difference of '
-                      + str(error_diff))
+                      + str(error_diff) + ' and error of ' + str(errors[iteration]))
                 break
 
-        return theta, errors
+            if caculated_iters > 0 and iteration == caculated_iters:
+                print('Gradient descent converged based on first calculated iterations at ' + str(iteration))
+                break
+
+        if iteration == num_iters:
+            print('Gradient descent converged after reach max iterations: ' + str(iteration) + '.')
+
+        return theta, errors, iteration
