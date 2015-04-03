@@ -63,7 +63,7 @@ def run_cross_validation(gradient_descent_method, k_fold_nr, lambdas, num_iters,
     train_err_history = [[] for i in range(len(lambdas))]
 
     # train on train data taking all apart from one set and switching around
-    for i in range(5):  # k_fold_nr
+    for i in range(k_fold_nr):  # k_fold_nr
         for l in range(len(lambdas)):
             lam = lambdas[l]
             print('---------')
@@ -209,7 +209,7 @@ def main():
         k_fold_spam_data.append(spam_data_normalized[indices, :])
 
     lambdas = [1, 0.1, 0.01]
-    num_iters = 20
+    num_iters = 500
 
     for gradient_descent_method in gradient_descent_methods:
         train_err_history, predictions, y_test_sets = run_cross_validation(
