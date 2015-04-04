@@ -64,7 +64,7 @@ def run_cross_validation(gradient_descent_method, k_fold_nr, lambdas, num_iters,
     calculated_iters = [100, 100, 100]
 
     # train on train data taking all apart from one set and switching around
-    for i in range(4):  # k_fold_nr
+    for i in range(k_fold_nr):  # k_fold_nr
         for l in range(len(lambdas)):
             lam = lambdas[l]
             print('---------')
@@ -142,16 +142,16 @@ def select_k_fold_y(y_data, k_fold_indices, partition_number):
     return y_train_set, y_test_set
 
 
-def get_command_line_args():
+def get_command_line_args(gradient_descent_methods=[['stochastic', 'linear']]):
     # gradient_descent_method = [['batch', 'linear']]
     # gradient_descent_method = [['stochastic', 'logistic']]
     # gradient_descent_method = [['batch', 'logistic']]
-    gradient_descent_methods = [['stochastic', 'linear']]
+    # gradient_descent_methods = [['stochastic', 'linear']]
 
-    nrArgs = len(sys.argv)
+    nr_args = len(sys.argv)
 
     if len(sys.argv) > 9:
-        nrArgs = 9
+        nr_args = 9
 
     if len(sys.argv) < 3 or (len(sys.argv) - 1) % 2 != 0:
         print('You have to give an even number of arguments in sets of 2. E.g. \'stochastic linear\'. '
@@ -162,7 +162,7 @@ def get_command_line_args():
 
     print_msg = 'Running '
 
-    for i in range(1, nrArgs, 2):
+    for i in range(1, nr_args, 2):
         print_msg += sys.argv[i] + ' ' + sys.argv[i + 1] + ' and '
         gradient_descent_methods.append([sys.argv[i], sys.argv[i + 1]])
 
